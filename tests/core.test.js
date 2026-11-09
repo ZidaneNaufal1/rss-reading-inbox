@@ -1,0 +1,4 @@
+'use strict';const {test}=require('node:test'),assert=require('node:assert/strict'),x=require('../core');
+test('only http and https links are accepted',()=>{assert.equal(x.safeUrl('javascript:alert(1)'),'');assert.equal(x.safeUrl('https://example.org/'),'https://example.org/')});
+test('deduplication preserves existing reading state',()=>{let old={key:'a',read:true},fresh={key:'a',read:false};assert.deepEqual(x.merge([old],[fresh,{key:'b'}]),[old,{key:'b'}])});
+test('invalid or duplicate backup entries are rejected',()=>{const item={key:'1',title:'A',url:'https://example.org/',date:'',read:false,archived:false};assert.throws(()=>x.validate({version:1,items:[item,item]}));assert.throws(()=>x.validate({version:1,items:[{...item,url:'javascript:alert(1)'}]}));assert.equal(x.validate({version:1,items:[item]}).items.length,1)});
